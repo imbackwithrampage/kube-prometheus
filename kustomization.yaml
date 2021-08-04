@@ -34,8 +34,10 @@ resources:
 - ./manifests/kubernetes-prometheusRule.yaml
 - ./manifests/kubernetes-serviceMonitorApiserver.yaml
 - ./manifests/kubernetes-serviceMonitorCoreDNS.yaml
-- ./manifests/kubernetes-serviceMonitorKubeControllerManager.yaml
-- ./manifests/kubernetes-serviceMonitorKubeScheduler.yaml
+# Disable; metrics unavailable in kubeadm deployed cluster
+# See: https://github.com/prometheus-operator/kube-prometheus/issues/718
+# - ./manifests/kubernetes-serviceMonitorKubeControllerManager.yaml
+# - ./manifests/kubernetes-serviceMonitorKubeScheduler.yaml
 - ./manifests/kubernetes-serviceMonitorKubelet.yaml
 - ./manifests/node-exporter-clusterRole.yaml
 - ./manifests/node-exporter-clusterRoleBinding.yaml
