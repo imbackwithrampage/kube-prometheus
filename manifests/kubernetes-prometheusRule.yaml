@@ -551,7 +551,7 @@ spec:
         kube_node_status_condition{job="kube-state-metrics",condition="Ready",status="true"} == 0
       for: 15m
       labels:
-        severity: warning
+        severity: critical  # changed from warning
     - alert: KubeNodeUnreachable
       annotations:
         description: '{{ $labels.node }} is unreachable and some workloads may be rescheduled.'
@@ -561,7 +561,7 @@ spec:
         (kube_node_spec_taint{job="kube-state-metrics",key="node.kubernetes.io/unreachable",effect="NoSchedule"} unless ignoring(key,value) kube_node_spec_taint{job="kube-state-metrics",key=~"ToBeDeletedByClusterAutoscaler|cloud.google.com/impending-node-termination|aws-node-termination-handler/spot-itn"}) == 1
       for: 15m
       labels:
-        severity: warning
+        severity: critical  # changed from warning
     - alert: KubeletTooManyPods
       annotations:
         description: Kubelet '{{ $labels.node }}' is running at {{ $value | humanizePercentage }} of its Pod capacity.
