@@ -71,6 +71,11 @@ spec:
       sourceLabels:
       - __name__
       - container
+    # Ignore all K8s pause containers
+    - action: drop
+      regex: k8s.gcr.io/pause.+
+      sourceLabels:
+      - image
     path: /metrics/cadvisor
     port: https-metrics
     relabelings:
