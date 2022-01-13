@@ -24,6 +24,7 @@ resources:
 - ./manifests/grafana-serviceAccount.yaml
 - ./manifests/grafana-serviceMonitor.yaml
 - ./manifests/kube-prometheus-prometheusRule.yaml
+- ./manifests/kube-prometheus-recording-prometheusRule.yaml
 - ./manifests/kube-state-metrics-clusterRole.yaml
 - ./manifests/kube-state-metrics-clusterRoleBinding.yaml
 - ./manifests/kube-state-metrics-deployment.yaml
@@ -32,6 +33,7 @@ resources:
 - ./manifests/kube-state-metrics-serviceAccount.yaml
 - ./manifests/kube-state-metrics-serviceMonitor.yaml
 - ./manifests/kubernetes-prometheusRule.yaml
+- ./manifests/kubernetes-recording-prometheusRule.yaml
 - ./manifests/kubernetes-serviceMonitorApiserver.yaml
 - ./manifests/kubernetes-serviceMonitorCoreDNS.yaml
 # Disable; metrics unavailable in kubeadm deployed cluster
@@ -43,6 +45,7 @@ resources:
 - ./manifests/node-exporter-clusterRoleBinding.yaml
 - ./manifests/node-exporter-daemonset.yaml
 - ./manifests/node-exporter-prometheusRule.yaml
+- ./manifests/node-exporter-recording-prometheusRule.yaml
 - ./manifests/node-exporter-service.yaml
 - ./manifests/node-exporter-serviceAccount.yaml
 - ./manifests/node-exporter-serviceMonitor.yaml
