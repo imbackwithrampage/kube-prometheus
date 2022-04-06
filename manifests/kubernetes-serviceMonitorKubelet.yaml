@@ -71,11 +71,6 @@ spec:
       sourceLabels:
       - __name__
       - container
-    # Ignore all K8s pause containers
-    - action: drop
-      regex: k8s.gcr.io/pause.+
-      sourceLabels:
-      - image
     # Ignore these high cardinality container labels (still have pod/namespace)
     - action: labeldrop
       regex: (id|name)
