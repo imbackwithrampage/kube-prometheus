@@ -83,14 +83,16 @@ resources:
 - ./manifests/prometheus-serviceAccount.yaml
 - ./manifests/prometheus-serviceMonitor.yaml
 - ./manifests/setup/0namespace-namespace.yaml
-- ./manifests/setup/prometheus-operator-0alertmanagerConfigCustomResourceDefinition.yaml
-- ./manifests/setup/prometheus-operator-0alertmanagerCustomResourceDefinition.yaml
-- ./manifests/setup/prometheus-operator-0podmonitorCustomResourceDefinition.yaml
-- ./manifests/setup/prometheus-operator-0probeCustomResourceDefinition.yaml
-- ./manifests/setup/prometheus-operator-0prometheusCustomResourceDefinition.yaml
-- ./manifests/setup/prometheus-operator-0prometheusruleCustomResourceDefinition.yaml
-- ./manifests/setup/prometheus-operator-0servicemonitorCustomResourceDefinition.yaml
-- ./manifests/setup/prometheus-operator-0thanosrulerCustomResourceDefinition.yaml
+# Disable; creates a circular dependency between these and other resources in this layer
+# instead see ./manifests/setup/kustomization.yaml
+# - ./manifests/setup/prometheus-operator-0alertmanagerConfigCustomResourceDefinition.yaml
+# - ./manifests/setup/prometheus-operator-0alertmanagerCustomResourceDefinition.yaml
+# - ./manifests/setup/prometheus-operator-0podmonitorCustomResourceDefinition.yaml
+# - ./manifests/setup/prometheus-operator-0probeCustomResourceDefinition.yaml
+# - ./manifests/setup/prometheus-operator-0prometheusCustomResourceDefinition.yaml
+# - ./manifests/setup/prometheus-operator-0prometheusruleCustomResourceDefinition.yaml
+# - ./manifests/setup/prometheus-operator-0servicemonitorCustomResourceDefinition.yaml
+# - ./manifests/setup/prometheus-operator-0thanosrulerCustomResourceDefinition.yaml
 - ./manifests/setup/prometheus-operator-clusterRole.yaml
 - ./manifests/setup/prometheus-operator-clusterRoleBinding.yaml
 - ./manifests/setup/prometheus-operator-deployment.yaml
