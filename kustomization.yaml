@@ -17,7 +17,8 @@ resources:
 - ./manifests/blackbox-exporter-serviceMonitor.yaml
 - ./manifests/grafana-config.yaml
 - ./manifests/grafana-dashboardDatasources.yaml
-- ./manifests/grafana-dashboardDefinitions.yaml
+# Disable; moving grafana dashboards out of K8s resources into DB
+# - ./manifests/grafana-dashboardDefinitions.yaml
 - ./manifests/grafana-dashboardSources.yaml
 - ./manifests/grafana-deployment.yaml
 - ./manifests/grafana-service.yaml
