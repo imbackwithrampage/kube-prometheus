@@ -192,12 +192,12 @@ spec:
         severity: warning
     - alert: KubeJobCompletion
       annotations:
-        description: Job {{ $labels.namespace }}/{{ $labels.job_name }} is taking more than 12 hours to complete.
+        description: Job {{ $labels.namespace }}/{{ $labels.job_name }} is taking more than 24 hours to complete.
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubejobcompletion
         summary: Job did not complete in time
       expr: |
         kube_job_spec_completions{job="kube-state-metrics"} - kube_job_status_succeeded{job="kube-state-metrics"}  > 0
-      for: 12h
+      for: 24h
       labels:
         severity: warning
     - alert: KubeJobFailed
