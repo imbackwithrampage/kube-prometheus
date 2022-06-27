@@ -549,7 +549,7 @@ spec:
         summary: Node is not ready.
       expr: |
         kube_node_status_condition{job="kube-state-metrics",condition="Ready",status="true"} == 0
-      for: 15m
+      for: 5m
       labels:
         severity: critical  # changed from warning
     - alert: KubeNodeUnreachable
