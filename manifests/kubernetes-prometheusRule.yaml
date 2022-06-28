@@ -542,9 +542,19 @@ spec:
         severity: warning
   - name: kubernetes-system-kubelet
     rules:
+    - alert: KubeNodeNotReadyWarn
+      annotations:
+        description: '{{ $labels.node }} is unready.'
+        runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubenodenotready
+        summary: Node is not ready.
+      expr: |
+        kube_node_status_condition{job="kube-state-metrics",condition="Ready",status="true"} == 0
+      for: 0m
+      labels:
+        severity: warning
     - alert: KubeNodeNotReady
       annotations:
-        description: '{{ $labels.node }} has been unready for more than 15 minutes.'
+        description: '{{ $labels.node }} has been unready for more than 5 minutes.'
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubenodenotready
         summary: Node is not ready.
       expr: |
