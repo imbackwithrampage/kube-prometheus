@@ -30,11 +30,11 @@ spec:
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubepodnotready
         summary: Pod has been in a non-ready state for more than 15 minutes.
       expr: |
-        sum by (namespace, pod) (
-          max by(namespace, pod) (
+        sum by (grafana_ds, namespace, pod) (
+          max by(grafana_ds, namespace, pod) (
             kube_pod_status_phase{job="kube-state-metrics", phase=~"Pending|Unknown"}
-          ) * on(namespace, pod) group_left(owner_kind) topk by(namespace, pod) (
-            1, max by(namespace, pod, owner_kind) (kube_pod_owner{owner_kind!="Job"})
+          ) * on(namespace, pod) group_left(owner_kind) topk by(grafana_ds, namespace, pod) (
+            1, max by(grafana_ds, namespace, pod, owner_kind) (kube_pod_owner{owner_kind!="Job"})
           )
         ) > 0
       for: 15m
@@ -164,7 +164,7 @@ spec:
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubecontainerwaiting
         summary: Pod container waiting longer than 1 hour
       expr: |
-        sum by (namespace, pod, container) (kube_pod_container_status_waiting_reason{job="kube-state-metrics"}) > 0
+        sum by (grafana_ds, namespace, pod, container) (kube_pod_container_status_waiting_reason{job="kube-state-metrics"}) > 0
       for: 1h
       labels:
         severity: warning
@@ -341,9 +341,9 @@ spec:
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/cputhrottlinghigh
         summary: Processes experience elevated CPU throttling.
       expr: |
-        sum(increase(container_cpu_cfs_throttled_periods_total{container!="", namespace!~"bc-.*", pod!~"(node-exporter|blackbox-exporter|prometheus-operator|kube-state-metrics)-.*"}[5m])) by (container, pod, namespace)
+        sum(increase(container_cpu_cfs_throttled_periods_total{container!="", namespace!~"bc-.*", pod!~"(node-exporter|blackbox-exporter|prometheus-operator|kube-state-metrics)-.*"}[5m])) by (grafana_ds, container, pod, namespace)
           /
-        sum(increase(container_cpu_cfs_periods_total{}[5m])) by (container, pod, namespace)
+        sum(increase(container_cpu_cfs_periods_total{}[5m])) by (grafana_ds, container, pod, namespace)
           > ( 25 / 100 )
       for: 15m
       labels:
@@ -406,7 +406,7 @@ spec:
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeversionmismatch
         summary: Different semantic versions of Kubernetes components running.
       expr: |
-        count(count by (git_version) (label_replace(kubernetes_build_info{job!~"kube-dns|coredns"},"git_version","$1","git_version","(v[0-9]*.[0-9]*).*"))) > 1
+        count(count by (grafana_ds, git_version) (label_replace(kubernetes_build_info{job!~"kube-dns|coredns"},"git_version","$1","git_version","(v[0-9]*.[0-9]*).*"))) > 1
       for: 15m
       labels:
         severity: warning
@@ -416,9 +416,9 @@ spec:
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeclienterrors
         summary: Kubernetes API server client is experiencing errors.
       expr: |
-        (sum(rate(rest_client_requests_total{code=~"5.."}[5m])) by (instance, job, namespace)
+        (sum(rate(rest_client_requests_total{code=~"5.."}[5m])) by (grafana_ds, instance, job, namespace)
           /
-        sum(rate(rest_client_requests_total[5m])) by (instance, job, namespace))
+        sum(rate(rest_client_requests_total[5m])) by (grafana_ds, instance, job, namespace))
         > 0.01
       for: 15m
       labels:
@@ -489,7 +489,7 @@ spec:
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeclientcertificateexpiration
         summary: Client certificate is about to expire.
       expr: |
-        apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and on(job) histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 604800
+        apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and on(job) histogram_quantile(0.01, sum by (grafana_ds, job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 604800
       labels:
         severity: warning
     - alert: KubeClientCertificateExpiration
@@ -498,7 +498,7 @@ spec:
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeclientcertificateexpiration
         summary: Client certificate is about to expire.
       expr: |
-        apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and on(job) histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 86400
+        apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and on(job) histogram_quantile(0.01, sum by (grafana_ds, job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 86400
       labels:
         severity: critical
     - alert: AggregatedAPIErrors
@@ -507,7 +507,7 @@ spec:
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/aggregatedapierrors
         summary: An aggregated API has reported errors.
       expr: |
-        sum by(name, namespace)(increase(aggregator_unavailable_apiservice_total[10m])) > 4
+        sum by(grafana_ds, name, namespace)(increase(aggregator_unavailable_apiservice_total[10m])) > 4
       labels:
         severity: warning
     - alert: AggregatedAPIDown
@@ -516,7 +516,7 @@ spec:
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/aggregatedapidown
         summary: An aggregated API is down.
       expr: |
-        (1 - max by(name, namespace)(avg_over_time(aggregator_unavailable_apiservice[10m]))) * 100 < 85
+        (1 - max by(grafana_ds, name, namespace)(avg_over_time(aggregator_unavailable_apiservice[10m]))) * 100 < 85
       for: 5m
       labels:
         severity: warning
@@ -578,11 +578,11 @@ spec:
     #     runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubelettoomanypods
     #     summary: Kubelet is running at capacity.
     #   expr: |
-    #     count by(node) (
-    #       (kube_pod_status_phase{job="kube-state-metrics",phase="Running"} == 1) * on(instance,pod,namespace,cluster) group_left(node) topk by(instance,pod,namespace,cluster) (1, kube_pod_info{job="kube-state-metrics"})
+    #     count by(grafana_ds, node) (
+    #       (kube_pod_status_phase{job="kube-state-metrics",phase="Running"} == 1) * on(instance,pod,namespace,cluster) group_left(node) topk by(grafana_ds, instance,pod,namespace,cluster) (1, kube_pod_info{job="kube-state-metrics"})
     #     )
     #     /
-    #     max by(node) (
+    #     max by(grafana_ds, node) (
     #       kube_node_status_capacity{job="kube-state-metrics",resource="pods"} != 1
     #     ) > 0.95
     #   for: 15m
@@ -594,7 +594,7 @@ spec:
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubenodereadinessflapping
         summary: Node readiness status is flapping.
       expr: |
-        sum(changes(kube_node_status_condition{status="true",condition="Ready"}[15m])) by (node) > 2
+        sum(changes(kube_node_status_condition{status="true",condition="Ready"}[15m])) by (grafana_ds, node) > 2
       for: 15m
       labels:
         severity: warning
@@ -614,7 +614,7 @@ spec:
         runbook_url: https://runbooks.prometheus-operator.dev/runbooks/kubernetes/kubeletpodstartuplatencyhigh
         summary: Kubelet Pod startup latency is too high.
       expr: |
-        histogram_quantile(0.99, sum(rate(kubelet_pod_worker_duration_seconds_bucket{job="kubelet", metrics_path="/metrics"}[5m])) by (instance, le)) * on(instance) group_left(node) kubelet_node_name{job="kubelet", metrics_path="/metrics"} > 60
+        histogram_quantile(0.99, sum(rate(kubelet_pod_worker_duration_seconds_bucket{job="kubelet", metrics_path="/metrics"}[5m])) by (grafana_ds, instance, le)) * on(instance) group_left(node) kubelet_node_name{job="kubelet", metrics_path="/metrics"} > 60
       for: 15m
       labels:
         severity: warning
